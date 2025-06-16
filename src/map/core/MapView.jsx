@@ -84,13 +84,23 @@ const MapView = ({ children }) => {
     },
   ), []);
 
+  //โหลดจาก URL (CDN) แทนการ importเจอปัญหาเกี่ยวกับ "exports" หรือ subpath limitations ของ Node.js หรือ Vite
   useEffectAsync(async () => {
-    if (theme.direction === 'rtl') {
-      // eslint-disable-next-line import/no-unresolved
-      const module = await import('@mapbox/mapbox-gl-rtl-text/mapbox-gl-rtl-text.min?url');
-      maplibregl.setRTLTextPlugin(module.default);
-    }
-  }, [theme.direction]);
+  if (theme.direction === "rtl") {
+    await loadScript('https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js');
+    maplibregl.setRTLTextPlugin(window.mapboxglRTLTextPlugin);
+  }
+}, [theme.direction]);
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
 
   useEffect(() => {
     const attribution = new maplibregl.AttributionControl({ compact: true });
