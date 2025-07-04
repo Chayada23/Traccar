@@ -8,7 +8,7 @@ export default defineConfig(() => ({
     port: 3000,
     proxy: {
       '/api/socket': 'ws://localhost:8082',
-      '/api': 'http://localhost:8082',
+      '/api': 'http://localhost:8082', // ชี้ไปที่ backend
     },
   },
   build: {
